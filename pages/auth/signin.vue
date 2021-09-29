@@ -41,11 +41,11 @@ export default {
 	methods: {
 		Login() {
 			this.$fire.auth.signInWithEmailAndPassword(this.username, this.password)
+			.then((user) => {
+				$nuxt.$router.push('/')
+			})
 			.catch(function (error){
 				console.log(error.message)
-			}).then((user) => {
-				//we are signed in
-				$nuxt.$router.push('/')
 			})
 		}
 	}

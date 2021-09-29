@@ -1,17 +1,16 @@
 const actions = {
-	async onAuthStateChangedAction(state, { authUser, claims }) {
-		
+	onAuthStateChangedAction(state, { authUser, claims }) {
 		if (!authUser) {
-			console.log("User not logged in")
 			state.commit("SET_USER", null)
 
 			this.$router.push({
 				path: "/auth/signin"
 			})
 		} else {
-			console.log("User is logged in")
+			console.log("User is logged in.")
 			const { uid, email } = authUser
 			state.commit("SET_USER", { uid, email })
+			this.$router.push({path: '/'})
 		}
 	}
 }
