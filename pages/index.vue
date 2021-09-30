@@ -1,16 +1,83 @@
 <template>
-  <div class="w-screen h-screen flex justify-center items-center bg-gray-500">
-    <h1>Welcome to your dashboard</h1>
-    <p>You are now logged in {{ $nuxt.$fire.auth.currentUser.email }}</p>
-    <button @click="$router.push('/auth/signout')">Logout</button>
-  </div>
+	<div class="w-screen h-screen flex justify-center items-center bg-gray-500">
+		<div class="h-100 w-full flex items-center justify-center font-sans">
+			<div class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg">
+				<div class="mb-4">
+					<h1 class="text-grey-darkest">Todo List</h1>
+					<form @submit.prevent="addTask">
+						<div class="flex mt-4">
+							<input v-model="taskName" class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker" placeholder="Add Todo"/>
+							<button type="submit" class="flex-no-shrink p-2 border-2 rounded text-teal border-teal hover:bg-gray-300">Add</button>
+						</div>
+					</form>
+				</div>
+
+				<div>
+					<li class="flex row items-center justify-between w-full py-1 px-4 my-1 rounded border bg-gray-100 text-gray-600" v-for="task of tasks" :key="task.id">
+						<div class="items-center column">
+							<input class="mx-1" type="checkbox" @change="taskToggle(task.id)" :class="{'line-through': task.finished === true}">
+							<span>{{ task.taskName }}</span>
+						</div>
+
+						<div class="items-center row-reverse">
+							<button class="px-4 py-2 float-right" @click="removeTask(task.id)">
+								<i class="fas fa-times"/>Remove
+							</button>
+							<button class="px-4 py-2 float-right">
+								<i class="fas fa-times"/>Edit
+							</button>
+						</div>
+					</li>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
 export default {
+	data() {
+		return {
+			taskName: "",
+			tasks: []
+		}
+	},
 	head() {
 		return {
-			title: "NuxtTest"
+			title: "NuxtTest",
+		};
+	},
+	created() {
+		this.retrieveTasks()
+	},
+	methods: {
+		async addTask() {
+			const docRef = this.$fire.firestore.collection("tasks").doc()
+
+			try {
+				await docRef.set({
+					taskName: this.taskName,
+					finished: false
+				})
+
+				this.taskName = ""
+				return this.retrieveTasks()
+			} catch (err) {
+				console.error(err)
+			}
+		},
+		async retrieveTasks() {
+			const documents = await this.$fire.firestore.collection("tasks").get()
+				
+			this.tasks = documents.docs.map(doc => {
+				return { id: doc.id, ...doc.data() }
+			})
+		},
+		taskToggle(id) {
+			console.log(id)
+		},
+		removeTask(id) {
+			console.log(id)
 		}
 	}
 };

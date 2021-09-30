@@ -31,14 +31,14 @@ export default {
 	buildModules: [
 		// https://go.nuxtjs.dev/tailwindcss
 		'@nuxtjs/tailwindcss',
-		'@nuxtjs/dotenv'
+		'@nuxtjs/dotenv',
+		'@nuxtjs/fontawesome'
 	],
 
 	router: {
 		middleware: ['auth']
 	},
-  
-
+	
 	// Modules: https://go.nuxtjs.dev/config-modules
 	modules: [
 		// https://go.nuxtjs.dev/axios
@@ -57,13 +57,14 @@ export default {
 				},
 				services: {
 					auth: {
-						persistence: 'session', // default
+						persistence: 'session',
 						initialize: {
 							onAuthStateChangedAction: 'onAuthStateChangedAction',
 							subscribeManually: false
 						},
-						ssr: false
-					}
+						ssr: true
+					},
+					firestore: true
 				}
 			}
 		]
