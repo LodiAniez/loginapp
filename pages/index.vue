@@ -13,19 +13,14 @@
 				</div>
 
 				<div>
-					<li class="flex row items-center justify-between w-full py-1 px-4 my-1 rounded border bg-gray-100 text-gray-600" v-for="task of tasks" :key="task.id">
+					<li class="flex row items-center justify-between w-full py-1 px-4 my-1 rounded border bg-gray-100 text-gray-600" :class="{'bg-gray-500': task.finished === true}" v-for="task of tasks" :key="task.id">
 						<div class="items-center column">
-							<input class="mx-1" type="checkbox" @change="taskToggle(task.id)" :class="{'line-through': task.finished === true}">
-							<span>{{ task.taskName }}</span>
+							<input class="mx-1" type="checkbox" @change="toggleTask(task.id, task.finished)" :checked="task.finished">
+							<span :class="{'line-through': task.finished === true}">{{ task.taskName }}</span>
 						</div>
 
 						<div class="items-center row-reverse">
-							<button class="px-4 py-2 float-right" @click="removeTask(task.id)">
-								<i class="fas fa-times"/>Remove
-							</button>
-							<button class="px-4 py-2 float-right">
-								<i class="fas fa-times"/>Edit
-							</button>
+							<button class="px-4 py-2 float-right" @click="removeTask(task.id)">Remove</button>
 						</div>
 					</li>
 				</div>
@@ -39,7 +34,8 @@ export default {
 	data() {
 		return {
 			taskName: "",
-			tasks: []
+			tasks: [],
+			taskCollection: this.$fire.firestore.collection("tasks")
 		}
 	},
 	head() {
@@ -52,7 +48,7 @@ export default {
 	},
 	methods: {
 		async addTask() {
-			const docRef = this.$fire.firestore.collection("tasks").doc()
+			const docRef = this.taskCollection.doc()
 
 			try {
 				await docRef.set({
@@ -67,17 +63,21 @@ export default {
 			}
 		},
 		async retrieveTasks() {
-			const documents = await this.$fire.firestore.collection("tasks").get()
-				
+			const documents = await this.taskCollection.get()
+			
 			this.tasks = documents.docs.map(doc => {
 				return { id: doc.id, ...doc.data() }
 			})
 		},
-		taskToggle(id) {
-			console.log(id)
+		async toggleTask(id, isFinished) {
+			const finished = !isFinished
+			
+			await this.taskCollection.doc(id).update({ finished })
+			return this.retrieveTasks()
 		},
-		removeTask(id) {
-			console.log(id)
+		async removeTask(id) {
+			await this.taskCollection.doc(id).delete()
+			return this.retrieveTasks()
 		}
 	}
 };
