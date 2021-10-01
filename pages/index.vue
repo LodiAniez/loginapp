@@ -38,14 +38,17 @@ export default {
 			taskCollection: this.$fire.firestore.collection("tasks")
 		}
 	},
+
 	head() {
 		return {
 			title: "NuxtTest",
 		};
 	},
+
 	created() {
 		this.retrieveTasks()
 	},
+
 	methods: {
 		async addTask() {
 			const docRef = this.taskCollection.doc()
@@ -63,21 +66,33 @@ export default {
 			}
 		},
 		async retrieveTasks() {
-			const documents = await this.taskCollection.get()
-			
-			this.tasks = documents.docs.map(doc => {
-				return { id: doc.id, ...doc.data() }
-			})
+			try {
+				const documents = await this.taskCollection.get()
+				
+				this.tasks = documents.docs.map(doc => {
+					return { id: doc.id, ...doc.data() }
+				})
+			} catch (err) {
+				console.error(err)
+			}
 		},
 		async toggleTask(id, isFinished) {
 			const finished = !isFinished
 			
-			await this.taskCollection.doc(id).update({ finished })
-			return this.retrieveTasks()
+			try {
+				await this.taskCollection.doc(id).update({ finished })
+				return this.retrieveTasks()
+			} catch (err) {
+				console.error(err)
+			}
 		},
 		async removeTask(id) {
-			await this.taskCollection.doc(id).delete()
-			return this.retrieveTasks()
+			try {
+				await this.taskCollection.doc(id).delete()
+				return this.retrieveTasks()
+			} catch (err) {
+				console.error(err)
+			}
 		}
 	}
 };

@@ -32,12 +32,14 @@ export default {
 			title: "NuxtTest"
 		}
 	},
+	
 	data() {
 		return {
 			username: null,
 			password: null
 		}
 	},
+	
 	methods: {
 		Login() {
 			this.$fire.auth.signInWithEmailAndPassword(this.username, this.password)

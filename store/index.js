@@ -10,7 +10,6 @@ const actions = {
 			console.log("User is logged in.")
 			const { uid, email } = authUser
 			state.commit("SET_USER", { uid, email })
-			this.$router.push({path: '/'})
 		}
 	}
 }
