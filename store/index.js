@@ -15,14 +15,14 @@ const actions = {
 
 	addTask(state, payload) {
 		const { taskName } = payload
-		const docRef = this.$fire.firestore.collection("tasks").doc()
+		const docRef = this.$fire.firestore.collection("tasks").doc(this.$fire.auth.currentUser.uid).collection("todos").doc()
 
 		try {
 			docRef.set({
 				taskName: taskName,
 				finished: false
 			})
-
+			
 			state.commit("ADD_TASK", { id: docRef.id, ...payload })
 		} catch (err) {
 			state.commit("CATCH_ERROR", err)
@@ -32,9 +32,9 @@ const actions = {
 	async toggleTask(state, payload) {
 		const { isFinished, id } = payload
 		const finished = !isFinished
-			
+
 		try {
-			await this.$fire.firestore.collection("tasks").doc(id).update({ finished })
+			await this.$fire.firestore.collection("tasks").doc(this.$fire.auth.currentUser.uid).collection("todos").doc(id).update({ finished })
 
 			state.commit("TOGGLE_TASK", { id, finished })
 		} catch (err) {
@@ -46,7 +46,7 @@ const actions = {
 		const { id } = payload
 		
 		try {
-			await this.$fire.firestore.collection("tasks").doc(id).delete()
+			await this.$fire.firestore.collection("tasks").doc(this.$fire.auth.currentUser.uid).collection("todos").doc(id).delete()
 
 			state.commit("REMOVE_TASK", payload)
 		} catch (err) {
@@ -56,14 +56,17 @@ const actions = {
 
 	async fetchTasks(state) {
 		try {
-			const documents = await this.$fire.firestore.collection("tasks").get()
-				
-			const tasks = documents.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+			const documents = await this.$fire.firestore.collection("tasks").doc(this.$fire.auth.currentUser.uid).collection("todos").get()
 			
+			const tasks = documents.docs.map(doc => ({ id: doc.id, ...doc.data() }))
 			state.commit("RETRIEVE_TASKS", tasks)
 		} catch (err) {
 			state.commit("CATCH_ERROR", err)
 		}
+	},
+
+	clearStore(state) {
+		state.commit("CLEAR_STORE")
 	}
 }
 
@@ -90,6 +93,12 @@ const mutations = {
 
 	CATCH_ERROR(state, payload) {
 		state.errors.push(payload)
+	},
+
+	CLEAR_STORE(state) {
+		state.user = null
+		state.taskList = []
+		state.errors = []
 	}
 }
 

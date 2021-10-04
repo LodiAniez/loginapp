@@ -22,7 +22,7 @@
 						<a id="linkAnchor" class="inline-block text-gray-600 no-underline hover:text-gray-200 hover:text-underline py-2 px-4" href="#" @click="$router.push('/finished-tasks'); toggleMenu()">View finished tasks</a>
 					</li>
 					<li class="mr-3">
-						<a class="inline-block text-gray-600 no-underline hover:text-gray-200 hover:text-underline py-2 px-4" href="#" @click="$router.push('/auth/signout')">Sign out</a>
+						<a class="inline-block text-gray-600 no-underline hover:text-gray-200 hover:text-underline py-2 px-4" href="#" @click="$router.push('/auth/signout'); $store.dispatch('clearStore')">Sign out</a>
 					</li>
 				</ul>
 			</div>
