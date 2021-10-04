@@ -1,7 +1,6 @@
 export default function ({ app, route, redirect, store }) {
-	console.log(store.state.user)
 	if (route.path !== '/auth/signin') {
-		if (!app.$fire.auth.currentUser) {
+		if (route.path !== '/auth/create-account' && !app.$fire.auth.currentUser) {
 			return redirect('/auth/signin')
 		}
 	} else if (route.path === '/auth/signin') {

@@ -3,7 +3,7 @@
 		<div class="h-100 w-full flex items-center justify-center font-sans">
 			<div class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg">
 				<div class="mb-4">
-					<h1 class="text-grey-darkest">Todo List</h1>
+					<h1 class="text-grey-darkest">Welcome {{ $nuxt.$fire.auth.currentUser.email }}<button class="px-1 float-right border rounded shadow bg-gray-200 active:bg-gray-100 hover:bg-gray-100" @click="$router.push('/auth/signout')">Sign out</button></h1>
 					<form @submit.prevent="addTask">
 						<div class="flex mt-4">
 							<input v-model="taskName" class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker" placeholder="Add Todo"/>
