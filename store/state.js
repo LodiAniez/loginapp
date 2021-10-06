@@ -1,5 +1,6 @@
 export default () => ({
   user: null,
   taskList: [],
-  errors: []
+  errors: [],
+  gallery: []
 });

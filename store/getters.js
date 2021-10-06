@@ -10,5 +10,9 @@ export default {
 
   getFinishedTasks(state) {
     return state.taskList.filter(key => key.finished);
+  },
+
+  getGallery(state) {
+    return state.gallery;
   }
 };

@@ -8,6 +8,14 @@ export default {
       : null;
   },
 
+  ADD_TO_GALLERY(state, payload) {
+    state.gallery.push(payload);
+  },
+
+  RETRIEVE_GALLERY(state, payload) {
+    state.gallery = payload;
+  },
+
   ADD_TASK(state, payload) {
     state.taskList.push(payload);
   },
@@ -35,5 +43,6 @@ export default {
     state.user = null;
     state.taskList = [];
     state.errors = [];
+    state.gallery = [];
   }
 };

@@ -52,7 +52,8 @@ export default {
         },
         ssr: true
       },
-      firestore: true
+      firestore: true,
+      storage: true
     }
   },
 
